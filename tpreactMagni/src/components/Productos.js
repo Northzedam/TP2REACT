@@ -5,7 +5,7 @@ import Tarjeta from './Tarjeta';
 import { Service } from '../services/Service';
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container';
-import Button from "react-bootstrap/Button"
+
 
 
 
@@ -39,14 +39,13 @@ export default class Productos extends Component {
         return (
             <React.Fragment>
                 <Navigation></Navigation>   
+                
                 <Container fluid="md">
-                    <Col>
-                        {instrumentos}
-                        <Button variant="warning">Actualizar</Button>{} &nbsp;
-                        <Button variant="danger">Eliminar</Button>
-                    </Col>
-
+                    <raw>
+                    {instrumentos} 
+                    </raw>
                 </Container>
+             
             </React.Fragment>
         );
     }

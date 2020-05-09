@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Service } from '../services/Service';
+import  { Redirect } from 'react-router-dom'
+import Formulario from './Formulario';
+
+
 
 
 export default class Tarjeta extends Component {
@@ -9,6 +13,24 @@ export default class Tarjeta extends Component {
   constructor() {
     super();
     this.instrumentoService = new Service();
+    this.state = {flag : false}
+  }
+
+    
+
+   borrarElemento(ev){
+    
+    var id = this.props.id;
+    console.log('el id recibido es: ',id);
+    this.instrumentoService.delete(id).then(console.log('datos borrados correctamente'))
+  }
+
+  actualizarElemento(ev){
+    var id = this.props.id;
+    console.log('el id recibido es: ',id);
+    localStorage.setItem('id',id);
+    this.setState({flag:true});
+     
   }
 
   render() {
@@ -27,10 +49,12 @@ export default class Tarjeta extends Component {
       envio = (
 
         <Card.Text>
-          Costo de Envio Interior de Argentina: ${this.props.precio}
+          Costo de Envio Interior de Argentina: ${this.props.costoEnvio}
         </Card.Text>
       );
     }
+
+
     return (
       <React.Fragment>
         <Card className="tarjeta">
@@ -53,12 +77,17 @@ export default class Tarjeta extends Component {
                 {envio}
                
                   <Card.Text>{this.props.cantidadVendida} vendidos</Card.Text>
-                  <Button variant="warning">Actualizar</Button> &nbsp;
-    <Button variant="danger" onClick={this.instrumentoService.delete(this.props.id)}>Eliminar </Button>
+                  <Button variant="warning" onClick={this.actualizarElemento.bind(this)}>Actualizar</Button> &nbsp;
+    <Button variant="danger" onClick={this.borrarElemento.bind(this)}>Eliminar </Button>
              
           </Card.Body>
         </Card>
+
+     
+        {this.state.flag && <Redirect to="formulario" />}
       </React.Fragment>
+
+     
     );
   }
 }
