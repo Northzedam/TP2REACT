@@ -41,9 +41,9 @@ export default class Productos extends Component {
                 <Navigation></Navigation>   
                 
                 <Container fluid="md">
-                    <raw>
+                    
                     {instrumentos} 
-                    </raw>
+                    
                 </Container>
              
             </React.Fragment>

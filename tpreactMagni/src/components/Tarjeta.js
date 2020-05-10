@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Service } from '../services/Service';
-import  { Redirect } from 'react-router-dom'
-import Formulario from './Formulario';
+import  { Redirect } from 'react-router-dom';
+import Productos from './Productos';
+
 
 
 
@@ -13,7 +14,12 @@ export default class Tarjeta extends Component {
   constructor() {
     super();
     this.instrumentoService = new Service();
-    this.state = {flag : false}
+    this.producto = new Productos();
+    this.state = {
+      flagUpdate : false,
+      flagDelete : false
+     
+    }
   }
 
     
@@ -22,14 +28,17 @@ export default class Tarjeta extends Component {
     
     var id = this.props.id;
     console.log('el id recibido es: ',id);
-    this.instrumentoService.delete(id).then(console.log('datos borrados correctamente'))
+    this.instrumentoService.delete(id).then(window.location.reload());
+    
+     
+    
   }
 
   actualizarElemento(ev){
     var id = this.props.id;
     console.log('el id recibido es: ',id);
     localStorage.setItem('id',id);
-    this.setState({flag:true});
+    this.setState({flagUpdate:true});
      
   }
 
@@ -84,7 +93,9 @@ export default class Tarjeta extends Component {
         </Card>
 
      
-        {this.state.flag && <Redirect to="formulario" />}
+        {this.state.flagUpdate  && <Redirect to="formulario" />}
+        {this.state.flagDelete  && <Redirect to="productos" />}
+       
       </React.Fragment>
 
      

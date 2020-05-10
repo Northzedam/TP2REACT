@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Service } from '../services/Service';
 import Navigation from './Navigation';
 import Form from 'react-bootstrap/Form';
+import { Redirect } from 'react-router-dom'
+
 
 class Formulario extends Component {
 
@@ -9,6 +11,7 @@ class Formulario extends Component {
         super();
 
         this.state = {
+            flag: false,
             id: "",
             instrumento: "",
             marca: "",
@@ -24,17 +27,17 @@ class Formulario extends Component {
 
     componentDidMount() {
         var idLocalStorage = localStorage.getItem('id');
-        if(idLocalStorage != undefined || idLocalStorage != null ){
-            this.instrumentoService.getOne(idLocalStorage).then(data =>{
-                this.setState({id : data.id});
-                this.setState({instrumento : data.instrumento});
-                this.setState({marca : data.marca});
-                this.setState({modelo : data.modelo});
-                this.setState({precio : data.precio});
-                this.setState({costoEnvio : data.costoEnvio});
-                this.setState({cantidadVendida : data.cantidadVendida});
-                this.setState({descripcion : data.descripcion});
-                
+        if (idLocalStorage != undefined || idLocalStorage != null) {
+            this.instrumentoService.getOne(idLocalStorage).then(data => {
+                this.setState({ id: data.id });
+                this.setState({ instrumento: data.instrumento });
+                this.setState({ marca: data.marca });
+                this.setState({ modelo: data.modelo });
+                this.setState({ precio: data.precio });
+                this.setState({ costoEnvio: data.costoEnvio });
+                this.setState({ cantidadVendida: data.cantidadVendida });
+                this.setState({ descripcion: data.descripcion });
+
             })
         }
     }
@@ -61,26 +64,29 @@ class Formulario extends Component {
         const descripcion = this.state.descripcion
         const imagen = document.getElementById('imagen').files[0].name;
         var formData = new FormData();
-        formData.append("imagen",document.getElementById('imagen').files[0])
+        formData.append("imagen", document.getElementById('imagen').files[0])
 
         const data = {
             id, instrumento, marca, modelo, precio, costoEnvio, cantidadVendida, descripcion, imagen
         }
         console.log('El nombre de la imagen es: ', imagen);
-        if(data.id == undefined || data.id == null || data.id==""){
+        if (data.id == undefined || data.id == null || data.id == "") {
             this.instrumentoService.post(data).then(data => {
-            
-                this.instrumentoService.postImage(formData)
-                
-               
-            }) 
-        }else{
+
+                this.instrumentoService.postImage(formData).then(setTimeout( ()=> this.setState({ flag: true }),500 ))
+            })
+        } else {
             this.instrumentoService.put(data).then(data => {
-                this.instrumentoService.postImage(formData).then(data => localStorage.clear())
-        })
-    }
+                this.instrumentoService.postImage(formData).then(data => {
+                    localStorage.clear();
+                    setTimeout( ()=> this.setState({ flag: true }),500 )
+                    
+                })
+            })
+        }
         
-        
+
+
 
     }
 
@@ -92,7 +98,7 @@ class Formulario extends Component {
                 <Navigation></Navigation>
                 <Form onSubmit={this.postData.bind(this)}>
                     <Form.Group controlId="text">
-                        
+
                         <input type="text" name="id" hidden="true" defaultValue={this.state.id} onChange={this.dataChange.bind(this)} />
                     </Form.Group>
 
@@ -141,6 +147,9 @@ class Formulario extends Component {
                         Guardar
 
                 </Form>
+
+                {this.state.flag && <Redirect to="productos" />}
+                {this.state.flagUpdate  && <Redirect to="formulario" />}
             </React.Fragment>
         );
     }
